@@ -8,24 +8,24 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Alertas bonitas -->
 </head>
 <body class="container mt-5">
-    <h2 class="text-center mb-4">📊 Procesador de Excel</h2>
+    <h2 class="text-center mb-4">📊 TPS Graphs</h2>
     
     <div class="card shadow p-4">
         <form id="uploadForm">
             <div class="mb-3">
-                <label class="form-label">📂 Selecciona un archivo Excel:</label>
+                <label class="form-label">📂 Select excel file:</label>
                 <input type="file" name="file" id="fileInput" class="form-control" accept=".xlsx, .xls" required>
             </div>
-            <button type="submit" class="btn btn-primary w-100">📤 Procesar Archivo</button>
+            <button type="submit" class="btn btn-primary w-100">📤 Process File</button>
         </form>
 
         <div id="loading" class="text-center mt-3" style="display: none;">
             <div class="spinner-border text-primary" role="status"></div>
-            <p>Procesando... por favor espera</p>
+            <p>"Processing...it won't take long"</p>
         </div>
 
         <div id="downloadSection" class="text-center mt-3" style="display: none;">
-            <a id="downloadLink" class="btn btn-success">⬇️ Descargar Resultados</a>
+            <a id="downloadLink" class="btn btn-success">⬇️ Download</a>
         </div>
     </div>
 
@@ -35,7 +35,7 @@
 
             let fileInput = document.getElementById("fileInput");
             if (!fileInput.files.length) {
-                Swal.fire("⚠️ Error", "Por favor, selecciona un archivo.", "warning");
+                Swal.fire("⚠️ Error", "Please, select the file.", "warning");
                 return;
             }
 
@@ -54,7 +54,7 @@
                 body: formData
             })
             .then(response => {
-                if (!response.ok) throw new Error("Error en la respuesta del servidor");
+                if (!response.ok) throw new Error("Error");
                 return response.blob();
             })
             .then(blob => {
@@ -62,10 +62,10 @@
                 downloadLink.href = url;
                 downloadLink.download = "resultados.zip";
                 downloadSection.style.display = "block";
-                Swal.fire("✅ Éxito", "El archivo ha sido procesado correctamente.", "success");
+                Swal.fire("✅ Olé!", "the file has been processed successfully.", "success");
             })
             .catch(error => {
-                Swal.fire("❌ Error", "Hubo un problema al procesar el archivo.", "error");
+                Swal.fire("❌ Error", "there was a problem during the parsing process.", "error");
             })
             .finally(() => {
                 loading.style.display = "none";
