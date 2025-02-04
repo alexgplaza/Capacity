@@ -3,74 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Procesador de Excel</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Alertas bonitas -->
+    <title>Generador de Gráficas Interactivas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="container mt-5">
-    <h2 class="text-center mb-4">📊 TPS Graphs</h2>
-    
-    <div class="card shadow p-4">
-        <form id="uploadForm">
-            <div class="mb-3">
-                <label class="form-label">📂 Select excel file:</label>
-                <input type="file" name="file" id="fileInput" class="form-control" accept=".xlsx, .xls" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">📤 Process File</button>
-        </form>
+<body class="bg-light">
 
-        <div id="loading" class="text-center mt-3" style="display: none;">
-            <div class="spinner-border text-primary" role="status"></div>
-            <p>"Processing...it won't take long"</p>
+<div class="container mt-5">
+    <h2 class="text-center">📊 Subir Archivo Excel para Generar Gráficas Interactivas</h2>
+
+    <!-- Formulario para subir el archivo -->
+    <form action="/" method="post" enctype="multipart/form-data" class="mt-4 text-center">
+        <input type="file" name="file" class="form-control mb-3" required>
+        <button type="submit" class="btn btn-primary">Generar Gráficas</button>
+    </form>
+
+    <hr>
+
+    <!-- Mostrar Gráficas Interactivas -->
+    {% if graphs %}
+        <h3 class="text-center mt-4">Resultados</h3>
+        <div class="row">
+            {% for graph in graphs %}
+                <div class="col-12">
+                    <div class="card shadow-lg p-3 mb-4 bg-white rounded">
+                        {{ graph | safe }}
+                    </div>
+                </div>
+            {% endfor %}
         </div>
+    {% endif %}
+</div>
 
-        <div id="downloadSection" class="text-center mt-3" style="display: none;">
-            <a id="downloadLink" class="btn btn-success">⬇️ Download</a>
-        </div>
-    </div>
-
-    <script>
-        document.getElementById("uploadForm").addEventListener("submit", function (event) {
-            event.preventDefault();
-
-            let fileInput = document.getElementById("fileInput");
-            if (!fileInput.files.length) {
-                Swal.fire("⚠️ Error", "Please, select the file.", "warning");
-                return;
-            }
-
-            let formData = new FormData();
-            formData.append("file", fileInput.files[0]);
-
-            let loading = document.getElementById("loading");
-            let downloadSection = document.getElementById("downloadSection");
-            let downloadLink = document.getElementById("downloadLink");
-
-            loading.style.display = "block";
-            downloadSection.style.display = "none";
-
-            fetch("/", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) throw new Error("Error");
-                return response.blob();
-            })
-            .then(blob => {
-                let url = window.URL.createObjectURL(blob);
-                downloadLink.href = url;
-                downloadLink.download = "resultados.zip";
-                downloadSection.style.display = "block";
-                Swal.fire("✅ Olé!", "the file has been processed successfully.", "success");
-            })
-            .catch(error => {
-                Swal.fire("❌ Error", "there was a problem during the parsing process.", "error");
-            })
-            .finally(() => {
-                loading.style.display = "none";
-            });
-        });
-    </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
