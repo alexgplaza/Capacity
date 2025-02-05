@@ -9,23 +9,23 @@ def index():
         file = request.files["file"]
         if file:
             df = pd.read_excel(file)
-            df["Fecha"] = pd.to_datetime(df["Fecha"], utc=True, errors="coerce")
-            df["Valor"] = pd.to_numeric(df["Valor"], errors="coerce")
-            df["Valor2"] = pd.to_numeric(df["Valor2"], errors="coerce")  # 📌 Convertir Valor2 a numérico
+            df["Date"] = pd.to_datetime(df["Date"], utc=True, errors="coerce")
+            df["Value"] = pd.to_numeric(df["Value"], errors="coerce")
+            df["Demand"] = pd.to_numeric(df["Demand"], errors="coerce")  # 📌 Convertir Valor2 a numérico
 
 
             # 📌 Convertir fechas a string ISO para evitar problemas con timestamps
             data = {}
             for DEPLOYMENT, datos in df.groupby("DEPLOYMENT"):
                 data[DEPLOYMENT] = {
-                    "tps": datos[datos["tps_tpd"] == "tps"][["Fecha", "Valor", "Valor2"]].dropna().to_dict(orient="records"),
-                    "tpd": datos[datos["tps_tpd"] == "tpd"][["Fecha", "Valor", "Valor2"]].dropna().to_dict(orient="records"),
+                    "tps": datos[datos["tps_tpd"] == "tps"][["Date", "Value", "Demand"]].dropna().to_dict(orient="records"),
+                    "tpd": datos[datos["tps_tpd"] == "tpd"][["Date", "Value", "Demand"]].dropna().to_dict(orient="records"),
                 }
 
             for DEPLOYMENT in data:
                 for tipo in ["tps", "tpd"]:
                     for i in range(len(data[DEPLOYMENT][tipo])):
-                        data[DEPLOYMENT][tipo][i]["Fecha"] = data[DEPLOYMENT][tipo][i]["Fecha"].isoformat()
+                        data[DEPLOYMENT][tipo][i]["Date"] = data[DEPLOYMENT][tipo][i]["Date"].isoformat()
 
             print(data)  # 📌 Verifica que las Fechas son cadenas
             return jsonify(data)
