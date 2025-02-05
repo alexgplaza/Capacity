@@ -11,13 +11,15 @@ def index():
             df = pd.read_excel(file)
             df["Fecha"] = pd.to_datetime(df["Fecha"], utc=True, errors="coerce")
             df["Valor"] = pd.to_numeric(df["Valor"], errors="coerce")
+            df["Valor2"] = pd.to_numeric(df["Valor2"], errors="coerce")  # 📌 Convertir Valor2 a numérico
+
 
             # 📌 Convertir fechas a string ISO para evitar problemas con timestamps
             data = {}
             for DEPLOYMENT, datos in df.groupby("DEPLOYMENT"):
                 data[DEPLOYMENT] = {
-                    "tps": datos[datos["tps_tpd"] == "tps"][["Fecha", "Valor"]].dropna().to_dict(orient="records"),
-                    "tpd": datos[datos["tps_tpd"] == "tpd"][["Fecha", "Valor"]].dropna().to_dict(orient="records"),
+                    "tps": datos[datos["tps_tpd"] == "tps"][["Fecha", "Valor", "Valor2"]].dropna().to_dict(orient="records"),
+                    "tpd": datos[datos["tps_tpd"] == "tpd"][["Fecha", "Valor", "Valor2"]].dropna().to_dict(orient="records"),
                 }
 
             for DEPLOYMENT in data:
