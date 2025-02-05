@@ -1,56 +1,35 @@
-import os
+from flask import Flask, request, jsonify, render_template
 import pandas as pd
-import plotly.express as px
-from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    graphs = []  # Aquí guardaremos los gráficos en HTML
-
     if request.method == "POST":
         file = request.files["file"]
         if file:
-            # 🔄 Cargar el Excel
             df = pd.read_excel(file)
+            df["Fecha"] = pd.to_datetime(df["Fecha"], utc=True, errors="coerce")
+            df["Valor"] = pd.to_numeric(df["Valor"], errors="coerce")
 
-            # 🛠️ Convertir la columna de fechas si existe
-            if "Fecha" in df.columns:
-                df["Fecha"] = pd.to_datetime(df["Fecha"], utc=True)
+            # 📌 Convertir fechas a string ISO para evitar problemas con timestamps
+            data = {}
+            for DEPLOYMENT, datos in df.groupby("DEPLOYMENT"):
+                data[DEPLOYMENT] = {
+                    "tps": datos[datos["tps_tpd"] == "tps"][["Fecha", "Valor"]].dropna().to_dict(orient="records"),
+                    "tpd": datos[datos["tps_tpd"] == "tpd"][["Fecha", "Valor"]].dropna().to_dict(orient="records"),
+                }
 
-            # 📊 Generar gráficos para cada despliegue
-            unique_deployments = df["DEPLOYMENT"].unique()
-            for deployment in unique_deployments:
-                subset = df[df["DEPLOYMENT"] == deployment]
+            for DEPLOYMENT in data:
+                for tipo in ["tps", "tpd"]:
+                    for i in range(len(data[DEPLOYMENT][tipo])):
+                        data[DEPLOYMENT][tipo][i]["Fecha"] = data[DEPLOYMENT][tipo][i]["Fecha"].isoformat()
 
-                # 🔹 Crear el gráfico interactivo con Plotly
-                fig = px.line(
-                    subset, 
-                    x="Fecha", 
-                    y="Valor", 
-                    title=f"DEPLOYMENT: {deployment}",
-                    markers=True,  # Agrega puntos en la línea
-                    labels={"Valor": "Valor"},
-                    template="plotly_white",
-                    width=1250, height=400
-                )
+            print(data)  # 📌 Verifica que las Fechas son cadenas
+            return jsonify(data)
 
-                # Si hay una segunda serie de datos, la agregamos
-                if "Valor 2" in df.columns:
-                    fig.add_scatter(
-                        x=subset["Fecha"], 
-                        y=subset["Valor 2"], 
-                        mode="lines+markers",
-                        name="Valor 2"
-                    )
-                
-
-                # 🔥 Convertir la gráfica en HTML y guardarla en la lista
-                graph_html = fig.to_html(full_html=False)
-                graphs.append(graph_html)
-
-    return render_template("index.html", graphs=graphs)
+    # 📌 Manejar GET para renderizar la página con el formulario
+    return render_template("index.html")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
