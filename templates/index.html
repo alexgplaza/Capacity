@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Gráficas</title>
+    <title>TPS TPD Graph Generator</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">  <!-- 📌 Agregar esta línea -->
 </head>
 <body>
-    <h1>Sube tu archivo Excel</h1>
+    <h1>Upload excel file</h1>
     <form id="uploadForm" enctype="multipart/form-data">
         <input type="file" id="fileInput" name="file" required>
-        <button type="submit">Subir</button>
+        <button type="submit">Upload</button>
     </form>
 
     <div id="charts"></div>  <!-- Aquí se insertarán las gráficas -->
