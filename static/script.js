@@ -3,7 +3,7 @@ function plotGraphs(data) {
     container.innerHTML = ""; // Limpiar gráficos previos
 
     Object.keys(data).forEach(deployment => {
-        ["tps", "tpd"].forEach(type => {
+        ["TPS", "TPD"].forEach(type => {
             if (data[deployment][type].length > 0) {
                 const dates = data[deployment][type].map(d => new Date(d.Date)); 
                 const values = data[deployment][type].map(d => d.Value);
@@ -14,8 +14,8 @@ function plotGraphs(data) {
                     y: values,
                     mode: "lines",
                     name: `${deployment} - ${type} (Value)`,
-                    line: { color: "#9ACD32", width: 2 },
-                    marker: { color: "#9ACD32", size: 8 }
+                    line: { color: "#365bb7", width: 2 },
+                    marker: { color: "#365bb7", size: 8 }
                 };
 
                 const trace2 = {
@@ -23,17 +23,17 @@ function plotGraphs(data) {
                     y: values2,
                     mode: "lines",
                     name: `${deployment} - ${type} (Demand)`,
-                    line: { color: "#3399FF", width: 2, dash: 'dash' },  // 📌 Diferente color para diferenciarlo
-                    marker: { color: "#3399FF", size: 8 }
+                    line: { color: "#fb0006", width: 2, dash: 'dash' },  // 📌 Diferente color para diferenciarlo
+                    marker: { color: "#fb0006", size: 8 }
                 };
 
                 const layout = {
                     title: `${deployment} - ${type}`,
                     xaxis: { title: "Date", type: "date" },
                     yaxis: { title: "Value" },
-                    plot_bgcolor: "#404040",
-                    paper_bgcolor: "#2c2c2c",
-                    font: { color: "#FFFFFF" },
+                    plot_bgcolor: "#ffffff",
+                    paper_bgcolor: "#ffffff",
+                    font: { color: "#000000" },
                     autosize: true,
                     width: null,
                     height: 600,

@@ -18,12 +18,12 @@ def index():
             data = {}
             for DEPLOYMENT, datos in df.groupby("DEPLOYMENT"):
                 data[DEPLOYMENT] = {
-                    "tps": datos[datos["tps_tpd"] == "tps"][["Date", "Value", "Demand"]].dropna().to_dict(orient="records"),
-                    "tpd": datos[datos["tps_tpd"] == "tpd"][["Date", "Value", "Demand"]].dropna().to_dict(orient="records"),
+                    "TPS": datos[datos["tps_tpd"] == "tps"][["Date", "Value", "Demand"]].dropna().to_dict(orient="records"),
+                    "TPD": datos[datos["tps_tpd"] == "tpd"][["Date", "Value", "Demand"]].dropna().to_dict(orient="records"),
                 }
 
             for DEPLOYMENT in data:
-                for tipo in ["tps", "tpd"]:
+                for tipo in ["TPS", "TPD"]:
                     for i in range(len(data[DEPLOYMENT][tipo])):
                         data[DEPLOYMENT][tipo][i]["Date"] = data[DEPLOYMENT][tipo][i]["Date"].isoformat()
 
