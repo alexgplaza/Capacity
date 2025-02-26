@@ -19,7 +19,7 @@ def index():
             for DEPLOYMENT, datos in df.groupby("DEPLOYMENT"):
                 data[DEPLOYMENT] = {
                     "TPS": datos[datos["tps_tpd"] == "tps"][["Date", "Value", "Demand"]].dropna().to_dict(orient="records"),
-                    "TPD": datos[datos["tps_tpd"] == "tpd"][["Date", "Value", "Demand"]].dropna().to_dict(orient="records"),
+                    "TPD": datos[datos["tps_tpd"] == "tpd"][["Date", "Value"]].dropna().to_dict(orient="records"),
                 }
 
             for DEPLOYMENT in data:
