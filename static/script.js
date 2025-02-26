@@ -34,7 +34,9 @@ function plotGraphs(data) {
                 }
 
                 const layout = {
-                    title: `${deployment} - ${type}`,
+                    title: type === "TPS" 
+                        ? `Network APIs live traffic - NaaP - ${deployment} - Transactions per second`
+                        : `Network APIs live traffic - NaaP - ${deployment} - Transactions per day`,
                     xaxis: { title: "Date", type: "date" },
                     yaxis: { title: "Value" },
                     plot_bgcolor: "#ffffff",
