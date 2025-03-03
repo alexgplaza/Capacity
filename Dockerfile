@@ -6,6 +6,8 @@ WORKDIR /app
 
 # Copia solo los archivos esenciales
 COPY requirements.txt ./
+COPY templates/ templates/
+COPY static/ static/
 
 # Instala dependencias sin caché para reducir tamaño
 RUN apk add --no-cache gcc musl-dev libffi-dev \
