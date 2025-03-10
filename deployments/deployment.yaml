@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: graphs
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: graphs
+  template:
+    metadata:
+      labels:
+        app: graphs
+    spec:
+      containers:
+      - image: dockertester1986/tpsgenerator:latest
+        name: graphs
+        ports:
+        - containerPort: 5000
